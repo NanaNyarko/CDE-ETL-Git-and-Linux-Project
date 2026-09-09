@@ -39,19 +39,8 @@ etl-project/
 
 ## Pipeline Diagram
 
-[ Stats NZ website ]
-|
-| curl downloads the file
-v
-[ raw/ ] ---------------------> Extract
-|
-| awk renames + picks 4 columns
-v
-[ Transformed/ ] -----------------> Transform
-|
-| cp copies the final file
-v
-[ Gold/ ] ----------------------> Load
+<img width="361" height="63" alt="image" src="https://github.com/user-attachments/assets/9982f6fa-6330-4031-9481-935ebce93e3f" />
+
 
 
 Every step prints a message confirming it worked (or an error if it
@@ -102,8 +91,7 @@ to clean it up, and `cp` to load the final version into `Gold/`.
 ```bash
    crontab -l
 ```
-   Git Bash doesn't include `crontab`, so this needs a real Linux
-   environment — I used WSL (Ubuntu) for this step.
+   Git Bash doesn't include `crontab`. I used WSL (Ubuntu) for this step.
 
 4. **File-mover script**, on any folder with `.csv`/`.json` files:
 ```bash
@@ -120,7 +108,7 @@ to clean it up, and `cp` to load the final version into `Gold/`.
    git init
    git add .
    git commit -m "Initial commit: ETL script, cron setup, file mover"
-   git remote add origin https://github.com/NanaNyarko/CDE-ETL-Git-and-Linux-Project.git
+   git remote add origin https://github.com/username/repo
    git branch -M main
    git push -u origin main
 ```
