@@ -1,4 +1,4 @@
-# CDE ETL, Cron & Git Project
+# Simple ETL Pipeline
 
 ## Project Background
 
@@ -6,7 +6,7 @@ I recently joined the Core Data Engineer Program to help me put together
 the bits and bobs I had been learning in Data Engineering. To be honest,
 this has been long overdue. I built this basic pipeline through Linux to
 download a CSV file from a website, clean and transform it, and schedule
-it to run automatically. To be honest, working on this is already giving
+it to run automatically. Working on this is already giving
 me a clearer picture of what Data Engineering is all about.
 
 Along the way I hit real beginner problems (wrong folder paths, git not
@@ -45,19 +45,52 @@ v
 [ Gold/ ] ----------------------> Load
 
 
+
 Every step prints a message confirming it worked (or an error if it
 didn't), so the pipeline's progress is visible directly in the terminal.
 
 ## Quickstart
 
+This project was built locally, folder by folder, then pushed up to
+GitHub at the end. To run it yourself, copy `etl_script.sh` into a
+folder and run:
+
 ```bash
-git clone https://github.com/NanaNyarko/CDE-ETL-Git-and-Linux-Project.git
-cd CDE-ETL-Git-and-Linux-Project
-chmod +x etl_script.sh && ./etl_script.sh
+export CSV_URL="https://www.stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2023-financial-year-provisional/Download-data/annual-enterprise-survey-2023-financial-year-provisional.csv"
+chmod +x etl_script.sh
+./etl_script.sh
 ```
 
-Three commands — downloads the data, transforms it, and loads it into
-`Gold/`, printing progress at each step.
+`export` stores the download address in a variable. The script then
+uses `curl` to actually fetch and save the file using that variable,
+`awk` to clean it up, and `cp` to load the final version into `Gold/`.
+
+## Reproduction Steps
+
+1. **Create a project folder and add the scripts**:
+```bash
+   mkdir etl-project
+   cd etl-project
+   nano etl_script.sh   # paste in the ETL script, save and exit
+   nano move_files.sh   # paste in the file-mover script, save and exit
+```
+
+2. **Set the environment variable and run the ETL script**:
+```bash
+   export CSV_URL="https://www.stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2023-financial-year-provisional/Download-data/annual-enterprise-survey-2023-financial-year-provisional.csv"
+   chmod +x etl_script.sh
+   ./etl_script.sh
+```
+   Confirmation:
+```bash
+   ls raw Transformed Gold
+```
+
+3. **Cron schedule** (runs daily at midnight):
+```bash
+   crontab -e
+```
+   Add this line, using the full path to wherever the project folder is:
 
 ## Reproduction Steps
 
