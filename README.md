@@ -6,14 +6,23 @@ I recently joined the Core Data Engineer Program to help me put together
 the bits and bobs I had been learning in Data Engineering. To be honest,
 this has been long overdue. I built this basic pipeline through Linux to
 download a CSV file from a website, clean and transform it, and schedule
-it to run automatically. Working on this is already giving
-me a clearer picture of what Data Engineering is all about.
+it to run automatically. Working on this is already giving me a clearer
+picture of what Data Engineering is all about.
 
 Along the way I hit real beginner problems (wrong folder paths, git not
 working properly on a Windows-mounted drive, cron not existing in Git
-Bash) and fixed each one. Those problems taught me more than if
-everything had just worked first try, so I kept it simple rather than
-polishing over the messy parts.
+Bash, GitHub login trouble) and fixed each one. Those problems taught me
+more than if everything had just worked first try, so I kept it simple
+rather than polishing over the messy parts.
+
+## Overview
+
+I extracted a CSV file from a data website using a Bash script. I then
+cleaned it, renaming a column and keeping only the four columns I
+needed, and saved the result as a new file. Finally, I loaded that
+finished file into its own folder, ready for use. I also scheduled the
+whole thing to run automatically every night, and wrote a second script
+to tidy up CSV and JSON files into one folder.
 
 ## Folder Structure
 
@@ -45,15 +54,10 @@ v
 [ Gold/ ] ----------------------> Load
 
 
-
 Every step prints a message confirming it worked (or an error if it
 didn't), so the pipeline's progress is visible directly in the terminal.
 
 ## Quickstart
-
-This project was built locally, folder by folder, then pushed up to
-GitHub at the end. To run it yourself, copy `etl_script.sh` into a
-folder and run:
 
 ```bash
 export CSV_URL="https://www.stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2023-financial-year-provisional/Download-data/annual-enterprise-survey-2023-financial-year-provisional.csv"
@@ -61,13 +65,13 @@ chmod +x etl_script.sh
 ./etl_script.sh
 ```
 
-`export` stores the download address in a variable. The script then
-uses `curl` to actually fetch and save the file using that variable,
-`awk` to clean it up, and `cp` to load the final version into `Gold/`.
+`export` stores the download link in a variable. The script then uses
+`curl` to actually fetch and save the file using that variable, `awk`
+to clean it up, and `cp` to load the final version into `Gold/`.
 
 ## Reproduction Steps
 
-1. **Create a project folder and add the scripts**:
+1. **Create the project folder and write the scripts**:
 ```bash
    mkdir etl-project
    cd etl-project
@@ -75,7 +79,7 @@ uses `curl` to actually fetch and save the file using that variable,
    nano move_files.sh   # paste in the file-mover script, save and exit
 ```
 
-2. **Set the environment variable and run the ETL script**:
+2. **Run the ETL script**:
 ```bash
    export CSV_URL="https://www.stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2023-financial-year-provisional/Download-data/annual-enterprise-survey-2023-financial-year-provisional.csv"
    chmod +x etl_script.sh
@@ -90,31 +94,7 @@ uses `curl` to actually fetch and save the file using that variable,
 ```bash
    crontab -e
 ```
-   Add this line, using the full path to wherever the project folder is:
-
-## Reproduction Steps
-
-1. **Clone the repo**:
-```bash
-   git clone https://github.com/NanaNyarko/CDE-ETL-Git-and-Linux-Project.git
-   cd CDE-ETL-Git-and-Linux-Project
-```
-
-2. **Run the ETL script**:
-```bash
-   chmod +x etl_script.sh
-   ./etl_script.sh
-```
-   Confirmation:
-```bash
-   ls raw Transformed Gold
-```
-
-3. **Cron schedule** (runs daily at midnight):
-```bash
-   crontab -e
-```
-   Add this line, using the full path to wherever the repo is cloned:
+   Add this line, using the full path to the project folder:
 
 0 0 * * * /bin/bash /full/path/to/etl_script.sh >> /full/path/to/etl_cron.log 2>&1
 
@@ -122,6 +102,8 @@ uses `curl` to actually fetch and save the file using that variable,
 ```bash
    crontab -l
 ```
+   Git Bash doesn't include `crontab`, so this needs a real Linux
+   environment — I used WSL (Ubuntu) for this step.
 
 4. **File-mover script**, on any folder with `.csv`/`.json` files:
 ```bash
@@ -133,14 +115,17 @@ uses `curl` to actually fetch and save the file using that variable,
    ls practice_files json_and_CSV
 ```
 
-5. **Saving changes with Git**:
+5. **Turn the project into a Git repo and push it to GitHub**:
 ```bash
+   git init
    git add .
-   git commit -m "describe what you changed"
-   git push
+   git commit -m "Initial commit: ETL script, cron setup, file mover"
+   git remote add origin https://github.com/NanaNyarko/CDE-ETL-Git-and-Linux-Project.git
+   git branch -M main
+   git push -u origin main
 ```
 
-## Beginner Problems and Fixes
+## Challenges Encountered
 
 - **Folder confusion**: solved by always running `pwd` before trusting
   a relative path like `raw/file.csv`.
@@ -153,10 +138,12 @@ uses `curl` to actually fetch and save the file using that variable,
 - **Git permissions error** on a Windows-mounted drive (`/mnt/c/...`):
   fixed by moving the project into the native Linux home folder, where
   Git works properly.
+- **GitHub login kept failing** with tokens (copy-paste into the
+  terminal was unreliable): fixed by installing GitHub CLI and logging
+  in through the browser instead (`gh auth login`), which avoids
+  typing or pasting a token by hand.
 
 ## Tools Used
 
-Bash, curl, awk, cron, Git — standard Linux command-line tools, no
-external programming language.
-
-
+Bash, curl, awk, cron, Git, GitHub CLI (`gh`) — standard Linux
+command-line tools, no external programming language.
